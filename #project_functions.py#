@@ -12,6 +12,7 @@ from sklearn import svm
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, roc_curve, auc
 import scipy.stats as stats
 
+
 def load_mnist():
     d = load_digits()
     df = pd.DataFrame(data = d.data)

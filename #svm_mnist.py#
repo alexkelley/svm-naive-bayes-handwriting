@@ -9,7 +9,7 @@ y_column = 'label'
 # print(count_class_variables(mnist, y_column))
 
 
-def raw_data_svm(df, X_columns, y_column):
+def all_features_svm(df, X_columns, y_column):
     '''
     Run SVM on a full data set.
     '''
@@ -195,7 +195,7 @@ def kernel_pca_svm(df, X_columns, y_column):
 ################
 ## Run Trials ##
 ################
-# raw_data_svm(mnist, X_columns, y_column)
+# all_features_svm(mnist, X_columns, y_column)
 # linear_pca_svm(mnist, X_columns, y_column)
 # random_svm(mnist, X_columns, y_column)
 kernel_pca_svm(mnist, X_columns, y_column)
