@@ -36,4 +36,4 @@ def all_features_nb(df, X_columns, y_column):
 ## Run Trials ##
 ################
 
-all_features_nb = all_features_nb(emnist, X_columns, y_column)
+#all_features_nb = all_features_nb(emnist, X_columns, y_column)

@@ -23,7 +23,18 @@ def load_mnist():
 
 def load_emnist():
     df = pd.read_csv('emnist-digits-test.csv')
-    return df
+
+    # take a stratified subsample of the data
+    y_column = list(df)[0]
+    new_df = pd.DataFrame(columns=list(df))
+    strat_values = set(df[y_column])
+
+    for i in strat_values:
+        df_strat = df.ix[df[y_column] == i]
+        df_strat = df_strat.sample(frac=1.0, random_state=42)
+        new_df = new_df.append(df_strat.iloc[:1000])
+
+    return new_df
 
 
 def display_df_stats(df):
@@ -250,7 +261,7 @@ def binarize_classes(df, y_column, target_class):
 
     for i in strat_values:
         df_strat = negative_df.ix[negative_df[y_column] == i]
-        df_strat = df_strat.sample(frac=1.0)
+        df_strat = df_strat.sample(frac=1.0, random_state=42)
         new_negative_df = new_negative_df.append(df_strat.iloc[:strat_n_rows])
 
     # convert negative class y_column to -1
