@@ -12,6 +12,7 @@ from sklearn import svm
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, roc_curve, auc
 import scipy.stats as stats
 
+
 def load_mnist():
     d = load_digits()
     df = pd.DataFrame(data = d.data)
@@ -21,7 +22,7 @@ def load_mnist():
 
 
 def load_emnist():
-    df = pd.read_csv('EMNIST/emnist-digits-test.csv')
+    df = pd.read_csv('emnist-digits-test.csv')
     return df
 
 
@@ -269,6 +270,28 @@ def build_nb_dataset(df, X_columns, y_column):
         samples[i] = [X_train, y_train, X_test, y_test]
 
     return samples
+
+
+def build_svm_dataset(df, X_columns, y_column):
+     # binarize_classes
+    class_set = set(df[y_column])
+    binarized_data = {}
+    for i in class_set:
+        target_class = float(i)
+        df_binarized = binarize_classes(df, y_column, target_class)
+        binarized_data[i] = df_binarized
+
+    # create 30 bootstrap samples for each binarized class
+    svm_data = {}
+    for label, data in binarized_data.items():
+        samples = {}
+        for i in range(30):
+            X_train, y_train, X_test, y_test = bootstrap_split(
+                data, i, X_columns, y_column)
+            samples[i] = [X_train, y_train, X_test, y_test]
+        svm_data[label] = samples
+
+    return svm_data
 
 
 def svm_trial(samples):

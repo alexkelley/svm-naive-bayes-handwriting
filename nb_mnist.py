@@ -18,7 +18,7 @@ def all_features_nb(df, X_columns, y_column):
     # run Naïve Bayes classifier
     nb_scores = nb_trial(samples)
 
-    title = 'Naïve Bayes classifier on MNIST using Raw Data'
+    title = 'Naïve Bayes classifier on MNIST using All Features'
 
     print(trials_report(nb_scores, 0.95, title))
 
@@ -67,7 +67,7 @@ def linear_pca_nb(df, X_columns, y_column):
     # evaluate variance of each PC and export to tab delimited test file
     pc_variance = evaluate_linear_pcs(X_data, len(X_columns))
 
-    filename = 'data/pc_variance.txt'
+    filename = 'data/pc_variance_mnist.txt'
 
     with open(filename, 'w') as f:
         f.write(pc_variance)

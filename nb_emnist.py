@@ -1,53 +1,39 @@
 import pprint
 from project_functions import *
 
+#### Load Data ####
 emnist = load_emnist()
-print(display_df_stats(emnist))
-
 X_columns = list(emnist)[1:]
 y_column = list(emnist)[0]
-
+print(display_df_stats(emnist))
 print(count_class_variables(emnist, y_column))
 
-#### Raw Data ####
 
-# build 30 training/testing samples using raw data
-samples = {}
-for i in range(30):
-    X_train, y_train, X_test, y_test = bootstrap_split(
-        emnist, i, X_columns, y_column)
-    samples[i] = [X_train, y_train, X_test, y_test]
+def all_features_nb(df, X_columns, y_column):
+    '''
+    Run Naïve Bayes on a full data set.
+    '''
+    samples = build_nb_dataset(df, X_columns, y_column)
 
-# run Naïve Bayes classifier
-nb_scores = nb_trial(samples)
+    # run Naïve Bayes classifier
+    nb_scores = nb_trial(samples)
 
-title = 'Naïve Bayes classifier on EMNIST using Raw Data'
-print(trials_report(nb_scores, 0.95, title))
+    title = 'Naïve Bayes classifier on EMNIST using All Features'
+
+    print(trials_report(nb_scores, 0.95, title))
+
+    # save testing accuracy data to local file
+    list_name = 'full_emnist_nb'
+    filename = 'data/{}.py'.format(list_name)
+
+    with open(filename, 'w') as f:
+        f.write('{0} = {1}'.format(list_name, pprint.pformat(nb_scores['accuracy_test'])))
+
+    return summary_statistics(nb_scores['accuracy_test'], 0.95)
 
 
+################
+## Run Trials ##
+################
 
-#### LPCA ####
-
-# X = emnist[X_columns]
-# # print(evaluate_principal_components(X, 50))
-
-# # reduce X to new DateFrame with desired number of PCs
-# emnist_lpca = fit_linear_PCA(X, 32)
-
-# # reattach labels to reduced DataFrame
-# emnist_lpca['label'] = emnist[y_column]
-# print(display_df_stats(emnist_lpca))
-
-# # build 30 training/testing samples using Linear PCA data
-# X_columns_lpca = list(emnist_lpca)[:-1]
-# samples = {}
-# for i in range(30):
-#     X_train, y_train, X_test, y_test = bootstrap_split(
-#         emnist_lpca, i, X_columns_lpca, 'label')
-#     samples[i] = [X_train, y_train, X_test, y_test]
-
-# # run Naïve Bayes classifier
-# nb_scores = nb_trial(samples)
-
-# title = 'Naïve Bayes classifier on EMNIST using Linear PCA'
-# print(trials_report(nb_scores, 0.95, title))
+all_features_nb = all_features_nb(emnist, X_columns, y_column)
