@@ -39,7 +39,7 @@ def load_emnist():
     for i in strat_values:
         df_strat = df.ix[df[y_column] == i]
         df_strat = df_strat.sample(frac=1.0, random_state=42)
-        new_df = new_df.append(df_strat.iloc[:1000])
+        new_df = new_df.append(df_strat.iloc[:100])
 
     return new_df
 
@@ -291,7 +291,7 @@ def binarize_classes(df, y_column, target_class):
         new_negative_df = new_negative_df.append(df_strat.iloc[:strat_n_rows])
 
     # convert negative class y_column to -1
-    new_negative_df[y_column] = 0
+    new_negative_df[y_column] = 0.0
 
     # rejoin split DataFrames and return
     final_df = target_df.append(new_negative_df)

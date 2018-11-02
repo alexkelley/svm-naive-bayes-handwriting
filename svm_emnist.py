@@ -83,8 +83,8 @@ def alternate_features_svm(df, X_columns, y_column):
 def linear_pca_svm(df, X_columns, y_column):
     X_data = df[X_columns]
 
-    # reduce X to new DateFrame with desired number of PCs
-    emnist_lpca = fit_linear_PCA(X_data, 13)
+    # reduce X to new DateFrame with 32 PCs
+    emnist_lpca = fit_linear_PCA(X_data, 2)
 
     # reattach labels to reduced DataFrame
     emnist_lpca[y_column] = df[y_column]
@@ -124,8 +124,8 @@ def linear_pca_svm(df, X_columns, y_column):
 def kernel_pca_svm(df, X_columns, y_column):
     X_data = df[X_columns]
 
-    # reduce X to new DateFrame with 13 PCs
-    emnist_kpca = fit_kernel_PCA(X_data, 13)
+    # reduce X to new DateFrame with 32 PCs
+    emnist_kpca = fit_kernel_PCA(X_data, 2)
 
     # reattach labels to reduced DataFrame
     emnist_kpca['label'] = df[y_column]
@@ -165,6 +165,6 @@ def kernel_pca_svm(df, X_columns, y_column):
 ## Run Trials ##
 ################
 all_features_svm(emnist, X_columns, y_column)
-# alternate_features_svm(emnist, X_columns, y_column)
-# linear_pca_svm(emnist, X_columns, y_column)
-# kernel_pca_svm(emnist, X_columns, y_column)
+#alternate_features_svm(emnist, X_columns, y_column)
+#linear_pca_svm(emnist, X_columns, y_column)
+#kernel_pca_svm(emnist, X_columns, y_column)
