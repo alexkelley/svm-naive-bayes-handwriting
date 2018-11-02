@@ -39,7 +39,7 @@ def load_emnist():
     for i in strat_values:
         df_strat = df.ix[df[y_column] == i]
         df_strat = df_strat.sample(frac=1.0, random_state=42)
-        new_df = new_df.append(df_strat.iloc[:1000])
+        new_df = new_df.append(df_strat.iloc[:3000])
 
     return new_df
 

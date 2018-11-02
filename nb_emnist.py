@@ -139,7 +139,7 @@ def kernel_pca_nb(df, X_columns, y_column):
 ## Run Trials ##
 ################
 
-# all_features_nb = all_features_nb(emnist, X_columns, y_column)
+all_features_nb = all_features_nb(emnist, X_columns, y_column)
 # alternate_nb = alternate_features_nb(emnist, X_columns, y_column)
 # lpca_nb = linear_pca_nb(emnist, X_columns, y_column)
-kpca_nb = kernel_pca_nb(emnist, X_columns, y_column)
+# kpca_nb = kernel_pca_nb(emnist, X_columns, y_column)
