@@ -39,7 +39,7 @@ def load_emnist():
     for i in strat_values:
         df_strat = df.ix[df[y_column] == i]
         df_strat = df_strat.sample(frac=1.0, random_state=42)
-        new_df = new_df.append(df_strat.iloc[:3000])
+        new_df = new_df.append(df_strat.iloc[:1000])
 
     return new_df
 
@@ -101,13 +101,13 @@ def evaluate_linear_pcs(X_data, n_components):
 
 
 def fit_linear_PCA(X_data, n_components):
-    # # normalize data
-    # z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
-    # scaled_X = z_scaler.fit_transform(X_data)
-    # df_scaled_X = pd.DataFrame(scaled_X)
+    # normalize data
+    z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
+    scaled_X = z_scaler.fit_transform(X_data)
+    df_scaled_X = pd.DataFrame(scaled_X)
 
     # run PCA
-    transform_data = PCA(n_components=n_components).fit_transform(X_data)
+    transform_data = PCA(n_components=n_components).fit_transform(df_scaled_X)
     df = pd.DataFrame(transform_data)
     return df
 
@@ -122,8 +122,14 @@ def fit_kernel_PCA(X_data, n_components):
         gamma = 0.0002,
         fit_inverse_transform=True
     ).fit_transform(X_data)
-    df = pd.DataFrame(transform_data)
-    return df
+    df = pd.DataFrame(transform_data, dtype=np.float64)
+
+    # normalize data
+    z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
+    scaled_X = z_scaler.fit_transform(df)
+    df_scaled_X = pd.DataFrame(scaled_X)
+
+    return df_scaled_X
 
 
 def select_feature_sample(df, X_columns):

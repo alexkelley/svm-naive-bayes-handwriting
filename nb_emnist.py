@@ -74,18 +74,14 @@ def linear_pca_nb(df, X_columns, y_column):
         f.write(pc_variance)
 
     # reduce X to new DateFrame with desired number of PCs
-    mnist_lpca = fit_linear_PCA(X_data, 32)
+    df_lpca = fit_linear_PCA(X_data, 32)
 
     # reattach labels to reduced DataFrame
-    mnist_lpca[y_column] = df[y_column]
-    print(display_df_stats(mnist_lpca))
-
-    mnist_lpca = mnist_lpca.dropna(axis='rows')
-    print(display_df_stats(mnist_lpca))
+    df_lpca['label'] = df[y_column].values
 
     # build 30 training/testing samples using Linear PCA data
-    X_columns_lpca = list(mnist_lpca)[:-1]
-    samples = build_nb_dataset(mnist_lpca, X_columns_lpca, y_column)
+    X_columns_lpca = list(df_lpca)[:-1]
+    samples = build_nb_dataset(df_lpca, X_columns_lpca, 'label')
 
     # run Naïve Bayes classifier
     nb_scores = nb_trial(samples)
@@ -110,14 +106,14 @@ def kernel_pca_nb(df, X_columns, y_column):
     X_data = df[X_columns]
 
     # reduce X to new DateFrame with 32 PCs
-    mnist_kpca = fit_kernel_PCA(X_data, 32)
+    df_kpca = fit_kernel_PCA(X_data, 32)
 
     # reattach labels to reduced DataFrame
-    mnist_kpca['label'] = df[y_column]
+    df_kpca['label'] = df[y_column].values
 
     # build 30 training/testing samples using Linear PCA data
-    X_columns_kpca = list(mnist_kpca)[:-1]
-    samples = build_nb_dataset(mnist_kpca, X_columns_kpca, y_column)
+    X_columns_kpca = list(df_kpca)[:-1]
+    samples = build_nb_dataset(df_kpca, X_columns_kpca, 'label')
 
     # run Naïve Bayes classifier
     nb_scores = nb_trial(samples)
@@ -139,7 +135,7 @@ def kernel_pca_nb(df, X_columns, y_column):
 ## Run Trials ##
 ################
 
-all_features_nb = all_features_nb(emnist, X_columns, y_column)
-# alternate_nb = alternate_features_nb(emnist, X_columns, y_column)
-# lpca_nb = linear_pca_nb(emnist, X_columns, y_column)
-# kpca_nb = kernel_pca_nb(emnist, X_columns, y_column)
+#all_features_nb = all_features_nb(emnist, X_columns, y_column)
+#alternate_nb = alternate_features_nb(emnist, X_columns, y_column)
+lpca_nb = linear_pca_nb(emnist, X_columns, y_column)
+#kpca_nb = kernel_pca_nb(emnist, X_columns, y_column)

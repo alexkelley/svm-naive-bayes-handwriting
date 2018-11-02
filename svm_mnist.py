@@ -164,7 +164,7 @@ def kernel_pca_svm(df, X_columns, y_column):
 ################
 ## Run Trials ##
 ################
-# all_features_svm(mnist, X_columns, y_column)
-# alternate_features_svm(mnist, X_columns, y_column)
-linear_pca_svm(mnist, X_columns, y_column)
-kernel_pca_svm(mnist, X_columns, y_column)
+#all_features_svm(mnist, X_columns, y_column)
+#alternate_features_svm(mnist, X_columns, y_column)
+#linear_pca_svm(mnist, X_columns, y_column)
+#kernel_pca_svm(mnist, X_columns, y_column)
