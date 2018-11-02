@@ -4,14 +4,14 @@ from math import sqrt
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_digits
-from sklearn.preprocessing import LabelBinarizer
+from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA, KernelPCA
 from sklearn.utils import resample
 from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, roc_curve, auc
 import scipy.stats as stats
-
+#import scipy.io.loadmat as loadmat
 
 def load_mnist():
     d = load_digits()
@@ -22,9 +22,16 @@ def load_mnist():
 
 
 def load_emnist():
-    df = pd.read_csv('emnist-digits-test.csv')
+    df = pd.read_csv(
+        'emnist-digits-test.csv',
+        header=None,
+        dtype=np.float64)
+
+    df = df.dropna(axis='rows')
 
     # take a stratified subsample of the data
+    # I run out of memory using more than 1000 observations
+    # per class label
     y_column = list(df)[0]
     new_df = pd.DataFrame(columns=list(df))
     strat_values = set(df[y_column])
@@ -94,6 +101,12 @@ def evaluate_linear_pcs(X_data, n_components):
 
 
 def fit_linear_PCA(X_data, n_components):
+    # # normalize data
+    # z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
+    # scaled_X = z_scaler.fit_transform(X_data)
+    # df_scaled_X = pd.DataFrame(scaled_X)
+
+    # run PCA
     transform_data = PCA(n_components=n_components).fit_transform(X_data)
     df = pd.DataFrame(transform_data)
     return df
@@ -162,6 +175,13 @@ def nb_trial(samples):
 
     for trial, data in samples.items():
         X_train, y_train, X_test, y_test = data
+
+        if X_train.isnull().values.any():
+            print('NaN values found in X_train')
+
+        if y_train.isnull().values.any():
+            print('NaN values found in y_train')
+
         nbclf = GaussianNB()
         fitnb = nbclf.fit(X_train, y_train)
 
@@ -173,7 +193,7 @@ def nb_trial(samples):
 
     scores = {
         'accuracy_train': acc_train,
-        'accuracy_test': acc_test
+        'accuracy_test': acc_test,
         #'sensitivity_test': tpr,
         #'specificity_test': 1 - fpr
     }
