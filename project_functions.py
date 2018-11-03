@@ -6,14 +6,14 @@ import pandas as pd
 from sklearn.datasets import load_digits
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA, KernelPCA
-from sklearn.utils import resample
+from sklearn.utils import resample, shuffle
 from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, roc_curve, auc
 import scipy.stats as stats
 #import scipy.io.loadmat as loadmat
 
-def load_mnist():
+def load_small():
     d = load_digits()
     df = pd.DataFrame(data = d.data)
     df['label'] = d.target
@@ -21,9 +21,10 @@ def load_mnist():
     return df
 
 
-def load_emnist():
+def load_large():
     df = pd.read_csv(
-        'emnist-digits-test.csv',
+        'features_28x28_train.csv',
+        #'emnist-digits-test.csv',
         header=None,
         dtype=np.float64)
 
@@ -287,8 +288,8 @@ def binarize_classes(df, y_column, target_class):
 
     for i in strat_values:
         df_strat = negative_df.ix[negative_df[y_column] == i]
-        df_strat = df_strat.sample(frac=1.0, random_state=42)
-        new_negative_df = new_negative_df.append(df_strat.iloc[:strat_n_rows])
+        new_negative_df = shuffle(df_strat, n_samples=strat_n_rows, random_state=42)
+        #new_negative_df = new_negative_df.append(df_strat.iloc[:strat_n_rows])
 
     # convert negative class y_column to -1
     new_negative_df[y_column] = 0.0
