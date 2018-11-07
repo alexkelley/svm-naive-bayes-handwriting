@@ -5,8 +5,9 @@ from project_functions import *
 df_small = load_small()
 X_columns = list(df_small)[:-1]
 y_column = 'label'
-# print(display_df_stats(mnist))
-# print(count_class_variables(mnist, y_column))
+#print(df_small.head())
+#print(display_df_stats(df_small))
+#print(count_class_variables(df_small, y_column))
 
 
 def all_features_nb(df, X_columns, y_column):

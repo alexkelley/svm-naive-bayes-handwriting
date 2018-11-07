@@ -168,9 +168,9 @@ def kernel_pca_svm(df, X_columns, y_column):
 if __name__ == '__main__':
     start_time = time.time()
 
-    #all_features_svm(df_large, X_columns, y_column)
+    all_features_svm(df_large, X_columns, y_column)
     #alternate_features_svm(df_large, X_columns, y_column)
-    linear_pca_svm(df_large, X_columns, y_column)
+    #linear_pca_svm(df_large, X_columns, y_column)
     #kernel_pca_svm(df_large, X_columns, y_column)
 
     end_time = time.time()

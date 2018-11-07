@@ -23,7 +23,8 @@ def load_small():
 
 def load_large():
     df = pd.read_csv(
-        'features_28x28_train.csv',
+        'features_28x28_test.csv',
+        #'../features_28x28_train.csv',
         #'emnist-digits-test.csv',
         header=None,
         dtype=np.float64)
@@ -103,12 +104,13 @@ def evaluate_linear_pcs(X_data, n_components):
 
 def fit_linear_PCA(X_data, n_components):
     # normalize data
-    z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
-    scaled_X = z_scaler.fit_transform(X_data)
-    df_scaled_X = pd.DataFrame(scaled_X)
+    # z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
+    # scaled_X = z_scaler.fit_transform(X_data)
+    # df_scaled_X = pd.DataFrame(scaled_X)
 
     # run PCA
-    transform_data = PCA(n_components=n_components).fit_transform(df_scaled_X)
+    transform_data = PCA(n_components=n_components).fit_transform(X_data)
+    #transform_data = PCA(n_components=n_components).fit_transform(df_scaled_X)
     df = pd.DataFrame(transform_data)
     return df
 
@@ -126,12 +128,12 @@ def fit_kernel_PCA(X_data, n_components):
     df = pd.DataFrame(transform_data, dtype=np.float64)
 
     # normalize data
-    z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
-    scaled_X = z_scaler.fit_transform(df)
-    df_scaled_X = pd.DataFrame(scaled_X)
+    # z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
+    # scaled_X = z_scaler.fit_transform(df)
+    # df_scaled_X = pd.DataFrame(scaled_X)
 
-    return df_scaled_X
-
+    # return df_scaled_X
+    return df
 
 def select_feature_sample(df, X_columns):
     '''
