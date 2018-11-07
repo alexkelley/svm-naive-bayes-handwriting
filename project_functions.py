@@ -11,7 +11,8 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, roc_curve, auc
 import scipy.stats as stats
-#import scipy.io.loadmat as loadmat
+import h5py
+from mat4py import loadmat
 
 def load_small():
     d = load_digits()
@@ -22,6 +23,10 @@ def load_small():
 
 
 def load_large():
+    # usps = loadmat('usps_resampled.mat')
+    # print(len(usps))
+    #df = pd.DataFrame.from_dict(usps)
+
     df = pd.read_csv(
         'features_28x28_test.csv',
         #'../features_28x28_train.csv',
@@ -31,9 +36,9 @@ def load_large():
 
     df = df.dropna(axis='rows')
 
-    # take a stratified subsample of the data
-    # I run out of memory using more than 1000 observations
-    # per class label
+    ## take a stratified subsample of the data
+    ## I run out of memory using more than 1000 observations
+    ## per class label
     y_column = list(df)[0]
     new_df = pd.DataFrame(columns=list(df))
     strat_values = set(df[y_column])

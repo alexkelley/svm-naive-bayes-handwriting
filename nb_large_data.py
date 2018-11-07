@@ -6,7 +6,7 @@ df_large = load_large()
 X_columns = list(df_large)[1:]
 y_column = list(df_large)[0]
 
-# print(display_df_stats(df_large))
+print(display_df_stats(df_large))
 # print(count_class_variables(df_large, y_column))
 
 
@@ -135,7 +135,7 @@ def kernel_pca_nb(df, X_columns, y_column):
 ## Run Trials ##
 ################
 
-all_features_nb = all_features_nb(df_large, X_columns, y_column)
-alternate_nb = alternate_features_nb(df_large, X_columns, y_column)
-lpca_nb = linear_pca_nb(df_large, X_columns, y_column)
-kpca_nb = kernel_pca_nb(df_large, X_columns, y_column)
+# all_features_nb = all_features_nb(df_large, X_columns, y_column)
+# alternate_nb = alternate_features_nb(df_large, X_columns, y_column)
+# lpca_nb = linear_pca_nb(df_large, X_columns, y_column)
+# kpca_nb = kernel_pca_nb(df_large, X_columns, y_column)
