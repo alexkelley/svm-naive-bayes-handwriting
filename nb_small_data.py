@@ -176,4 +176,4 @@ def compare_kpca(df, X_columns, y_column):
 
 #compare_kpca(df_small, X_columns, y_column)
 
-## Visualize the KPCA accuracy scores by number of PCs
+## Visualize the KPCA accuracy scores by number of components
