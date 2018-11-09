@@ -132,11 +132,48 @@ def kernel_pca_nb(df, X_columns, y_column):
     return summary_statistics(nb_scores['accuracy_test'], 0.95)
 
 
+def compare_kpca(df, X_columns, y_column):
+    X_data = df[X_columns]
+    results = []
+    for i in range(1, 65):
+        # reduce X to new DateFrame with varying PCs
+        mnist_kpca = fit_kernel_PCA(X_data, i)
+
+        # reattach labels to reduced DataFrame
+        mnist_kpca['label'] = df[y_column]
+
+        # build 30 training/testing samples using Linear PCA data
+        X_columns_kpca = list(mnist_kpca)[:-1]
+        samples = build_nb_dataset(mnist_kpca, X_columns_kpca, y_column)
+
+        # run Naïve Bayes classifier
+        nb_scores = nb_trial(samples)
+
+        title = 'Naïve Bayes classifier on Small Dataset using {} PCs from Kernel PCA'.format(len(X_columns_kpca))
+        print(kpca_trials_report(nb_scores, 0.95, title))
+
+        accuracy = summary_statistics(nb_scores['accuracy_test'], 0.95)['mean']
+        results.append((i, accuracy))
+
+    # save testing accuracy data to local file
+    list_name = 'test_kernel_pca_small_nb'
+    filename = 'data/{}.py'.format(list_name)
+
+    with open(filename, 'w') as f:
+        f.write('{0} = {1}'.format(list_name, results))
+
+    return True
+
+
 ################
 ## Run Trials ##
 ################
 
-all_features_nb = all_features_nb(df_small, X_columns, y_column)
-alternate_nb = alternate_features_nb(df_small, X_columns, y_column)
-lpca_nb = linear_pca_nb(df_small, X_columns, y_column)
-kpca_nb = kernel_pca_nb(df_small, X_columns, y_column)
+# all_features_nb = all_features_nb(df_small, X_columns, y_column)
+# alternate_nb = alternate_features_nb(df_small, X_columns, y_column)
+# lpca_nb = linear_pca_nb(df_small, X_columns, y_column)
+# kpca_nb = kernel_pca_nb(df_small, X_columns, y_column)
+
+#compare_kpca(df_small, X_columns, y_column)
+
+## Visualize the KPCA accuracy scores by number of PCs

@@ -120,6 +120,16 @@ def fit_linear_PCA(X_data, n_components):
     return df
 
 
+def test_components_kpca(df, X_columns):
+    for i in range(1, 20):
+        clf = KernelPCA(
+            n_components=i,
+            kernel='rbf',
+            gamma = 0.0002,
+            fit_inverse_transform=True
+        ).fit_transform(X_data)
+
+
 def fit_kernel_PCA(X_data, n_components):
     '''
    Documentation at: http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.KernelPCA.html
@@ -265,6 +275,26 @@ def trials_report(scores, confidence, title):
             confidence * 100,
             (stats['mean'] - stats['confidence_bound']) * 100,
             (stats['mean'] + stats['confidence_bound']) * 100)
+
+    return summary
+
+
+def kpca_trials_report(scores, confidence, title):
+    '''
+    Returns a string summarizing the accuracy results from a series of KPCA trial runs
+    of a classifier algorithm.
+    '''
+    summary = '\n{}\n'.format(title)
+
+    stats = summary_statistics(scores['accuracy_test'], confidence)
+    subtitle = 'Testing Set Accuracy for {} Trials'.format(stats['length'])
+    #summary += '{1}\n{0}\n{1}\n'.format(subtitle, len(subtitle) * '-')
+    summary += 'Mean: {:.2f}%\n'.format(stats['mean'] * 100)
+    summary += 'Standard Deviation: {:.2f}%\n'.format(sqrt(stats['variance']) * 100)
+    summary += 'With {:.0f}% confidence the mean lies within [{:.2f}%, {:.2f}%]\n\n'.format(
+        confidence * 100,
+        (stats['mean'] - stats['confidence_bound']) * 100,
+        (stats['mean'] + stats['confidence_bound']) * 100)
 
     return summary
 
