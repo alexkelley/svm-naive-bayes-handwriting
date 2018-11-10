@@ -22,6 +22,8 @@ def all_features_svm(df, X_columns, y_column):
         svm_scores = svm_trial(trial_samples)
         label_results[label] = svm_scores
 
+    summarize_labels(label_results, 'svm_all_results')
+
     # report mean accuracy & CI for each class
     overall_data = {}
     export_list = []
@@ -58,6 +60,8 @@ def alternate_features_svm(df, X_columns, y_column):
     for label, trial_samples in svm_data.items():
         svm_scores = svm_trial(trial_samples)
         label_results[label] = svm_scores
+
+    summarize_labels(label_results, 'svm_alternate_results')
 
     # report mean accuracy & CI for each class
     overall_data = {}
@@ -98,6 +102,8 @@ def linear_pca_svm(df, X_columns, y_column):
     for label, samples in svm_data.items():
         svm_scores = svm_trial(samples)
         label_results[label] = svm_scores
+
+    summarize_labels(label_results, 'svm_lpca_results')
 
     # report mean accuracy & CI for each class
     overall_data = {}
@@ -140,6 +146,8 @@ def kernel_pca_svm(df, X_columns, y_column):
         svm_scores = svm_trial(samples)
         label_results[label] = svm_scores
 
+    summarize_labels(label_results, 'svm_kpca_results')
+
     # report mean accuracy & CI for each class
     overall_data = {}
     export_list = []
@@ -169,9 +177,9 @@ if __name__ == '__main__':
     start_time = time.time()
 
     all_features_svm(df_small, X_columns, y_column)
-    # alternate_features_svm(df_small, X_columns, y_column)
-    # linear_pca_svm(df_small, X_columns, y_column)
-    # kernel_pca_svm(df_small, X_columns, y_column)
+    alternate_features_svm(df_small, X_columns, y_column)
+    linear_pca_svm(df_small, X_columns, y_column)
+    kernel_pca_svm(df_small, X_columns, y_column)
 
     end_time = time.time()
     print('\nElapsed time: {:.2f} seconds\n'.format(end_time - start_time))

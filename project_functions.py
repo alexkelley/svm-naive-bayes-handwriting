@@ -227,6 +227,32 @@ def summary_statistics(data, confidence):
     return summary
 
 
+def summarize_labels(data, fname):
+    summary = 'Label\tAccuracy\tSensitivity\tSpecificity\tF1\n'
+    for label, values in data.items():
+        summary += '{}\t'.format(int(label))
+        summary += '{}\t'.format(
+            summary_statistics(
+                values['accuracy_test'], 0.95)['mean'])
+        summary += '{}\t'.format(
+            summary_statistics(
+                values['sensitivity_test'], 0.95)['mean'])
+        summary += '{}\t'.format(
+            summary_statistics(
+                values['specificity_test'], 0.95)['mean'])
+        summary += '{}\n'.format(
+            summary_statistics(
+                values['f1'], 0.95)['mean'])
+
+    # save data to file
+    filename = 'data/{}.txt'.format(fname)
+
+    with open(filename, 'w') as f:
+        f.write(summary)
+
+    return True
+
+
 def trials_report(scores, confidence, title):
     '''
     Returns a string summarizing the accuracy results from a series of trial runs
@@ -373,6 +399,7 @@ def svm_trial(samples):
     acc_test = []
     sensitivity = []
     specificity = []
+    f1 = []
 
     for trial, data in samples.items():
         X_train, y_train, X_test, y_test = data
@@ -381,17 +408,21 @@ def svm_trial(samples):
 
         y_pred = clf.predict(X_test)
 
+        tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
+
         acc_train.append(clf.score(X_train, y_train))
         acc_test.append(clf.score(X_test, y_test))
-        fpr, tpr, _ = roc_curve(y_test.ravel(), y_pred.ravel())
-        sensitivity.append(tpr)
-        specificity.append(1-fpr)
+
+        sensitivity.append(tp / (tp + fn))
+        specificity.append(tn / (tn + fp))
+        f1.append((2 * tp) / (2 * tp + fp + fn))
 
     scores = {
         'accuracy_train': acc_train,
         'accuracy_test': acc_test,
         'sensitivity_test': sensitivity,
-        'specificity_test': specificity
+        'specificity_test': specificity,
+        'f1': f1
     }
 
     return scores
