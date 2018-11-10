@@ -169,9 +169,9 @@ if __name__ == '__main__':
     start_time = time.time()
 
     all_features_svm(df_small, X_columns, y_column)
-    alternate_features_svm(df_small, X_columns, y_column)
-    linear_pca_svm(df_small, X_columns, y_column)
-    kernel_pca_svm(df_small, X_columns, y_column)
+    # alternate_features_svm(df_small, X_columns, y_column)
+    # linear_pca_svm(df_small, X_columns, y_column)
+    # kernel_pca_svm(df_small, X_columns, y_column)
 
     end_time = time.time()
     print('\nElapsed time: {:.2f} seconds\n'.format(end_time - start_time))

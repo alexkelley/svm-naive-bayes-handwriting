@@ -11,8 +11,6 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn import svm
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, roc_curve, auc
 import scipy.stats as stats
-import h5py
-from mat4py import loadmat
 
 def load_small():
     d = load_digits()
@@ -20,35 +18,6 @@ def load_small():
     df['label'] = d.target
     df[['label']] = df[['label']].astype('float64')
     return df
-
-
-def load_large():
-    # usps = loadmat('usps_resampled.mat')
-    # print(len(usps))
-    #df = pd.DataFrame.from_dict(usps)
-
-    df = pd.read_csv(
-        'features_28x28_test.csv',
-        #'../features_28x28_train.csv',
-        #'emnist-digits-test.csv',
-        header=None,
-        dtype=np.float64)
-
-    df = df.dropna(axis='rows')
-
-    ## take a stratified subsample of the data
-    ## I run out of memory using more than 1000 observations
-    ## per class label
-    y_column = list(df)[0]
-    new_df = pd.DataFrame(columns=list(df))
-    strat_values = set(df[y_column])
-
-    for i in strat_values:
-        df_strat = df.ix[df[y_column] == i]
-        df_strat = df_strat.sample(frac=1.0, random_state=42)
-        new_df = new_df.append(df_strat.iloc[:100])
-
-    return new_df
 
 
 def display_df_stats(df):
@@ -280,6 +249,26 @@ def trials_report(scores, confidence, title):
     return summary
 
 
+def lpca_trials_report(scores, confidence, title):
+    '''
+    Returns a string summarizing the accuracy results from a series of LPCA trial runs
+    of a classifier algorithm.
+    '''
+    summary = '\n{}\n'.format(title)
+
+    stats = summary_statistics(scores['accuracy_test'], confidence)
+    subtitle = 'Testing Set Accuracy for {} Trials'.format(stats['length'])
+    #summary += '{1}\n{0}\n{1}\n'.format(subtitle, len(subtitle) * '-')
+    summary += 'Mean: {:.2f}%\n'.format(stats['mean'] * 100)
+    summary += 'Standard Deviation: {:.2f}%\n'.format(sqrt(stats['variance']) * 100)
+    summary += 'With {:.0f}% confidence the mean lies within [{:.2f}%, {:.2f}%]\n\n'.format(
+        confidence * 100,
+        (stats['mean'] - stats['confidence_bound']) * 100,
+        (stats['mean'] + stats['confidence_bound']) * 100)
+
+    return summary
+
+
 def kpca_trials_report(scores, confidence, title):
     '''
     Returns a string summarizing the accuracy results from a series of KPCA trial runs
@@ -382,6 +371,8 @@ def svm_trial(samples):
     '''
     acc_train = []
     acc_test = []
+    sensitivity = []
+    specificity = []
 
     for trial, data in samples.items():
         X_train, y_train, X_test, y_test = data
@@ -393,16 +384,17 @@ def svm_trial(samples):
         acc_train.append(clf.score(X_train, y_train))
         acc_test.append(clf.score(X_test, y_test))
         fpr, tpr, _ = roc_curve(y_test.ravel(), y_pred.ravel())
+        sensitivity.append(tpr)
+        specificity.append(1-fpr)
 
     scores = {
         'accuracy_train': acc_train,
         'accuracy_test': acc_test,
-        'sensitivity_test': tpr,
-        'specificity_test': 1 - fpr
+        'sensitivity_test': sensitivity,
+        'specificity_test': specificity
     }
 
     return scores
-
 
 
 def svm_report(overall_data, confidence, title):

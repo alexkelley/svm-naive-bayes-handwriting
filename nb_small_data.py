@@ -150,6 +150,41 @@ def kernel_pca_nb(df, X_columns, y_column):
     return summary_statistics(nb_scores['accuracy_test'], 0.95)
 
 
+def compare_lpca(df, X_columns, y_column):
+    X_data = df[X_columns]
+    results = []
+    for i in range(1, 65):
+        # reduce X to new DateFrame with varying PCs
+        mnist_lpca = fit_linear_PCA(X_data, i)
+
+        # reattach labels to reduced DataFrame
+        mnist_lpca['label'] = df[y_column]
+
+        # build 30 training/testing samples using Linear PCA data
+        X_columns_lpca = list(mnist_lpca)[:-1]
+        samples = build_nb_dataset(mnist_lpca, X_columns_lpca, y_column)
+
+        # run Naïve Bayes classifier
+        nb_scores = nb_trial(samples)
+
+        title = 'Naïve Bayes classifier on Small Dataset using {} PCs from Linear PCA'.format(i)
+        print(lpca_trials_report(nb_scores, 0.95, title))
+
+        accuracy = summary_statistics(
+            nb_scores['accuracy_test'],
+            0.95)['mean']
+        results.append((i, accuracy))
+
+    # save testing accuracy data to local file
+    list_name = 'test_linear_pca_small_nb'
+    filename = 'data/{}.py'.format(list_name)
+
+    with open(filename, 'w') as f:
+        f.write('{0} = {1}'.format(list_name, results))
+
+    return True
+
+
 def compare_kpca(df, X_columns, y_column):
     X_data = df[X_columns]
     results = []
@@ -167,7 +202,7 @@ def compare_kpca(df, X_columns, y_column):
         # run Naïve Bayes classifier
         nb_scores = nb_trial(samples)
 
-        title = 'Naïve Bayes classifier on Small Dataset using {} PCs from Kernel PCA'.format(n_components)
+        title = 'Naïve Bayes classifier on Small Dataset using {} PCs from Kernel PCA'.format(i)
         print(kpca_trials_report(nb_scores, 0.95, title))
 
         accuracy = summary_statistics(nb_scores['accuracy_test'], 0.95)['mean']
@@ -193,9 +228,10 @@ def compare_kpca(df, X_columns, y_column):
 # print(alternate_nb)
 # lpca_nb = linear_pca_nb(df_small, X_columns, y_column)
 # print(lpca_nb)
-kpca_nb = kernel_pca_nb(df_small, X_columns, y_column)
-print(kpca_nb)
+# kpca_nb = kernel_pca_nb(df_small, X_columns, y_column)
+# print(kpca_nb)
 
-#compare_kpca(df_small, X_columns, y_column)
+# compare_lpca(df_small, X_columns, y_column)
+# compare_kpca(df_small, X_columns, y_column)
 
 ## Visualize the KPCA accuracy scores by number of components
