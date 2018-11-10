@@ -108,46 +108,25 @@ def evaluate_linear_pcs(X_data, n_components):
 
 
 def fit_linear_PCA(X_data, n_components):
-    # normalize data
-    # z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
-    # scaled_X = z_scaler.fit_transform(X_data)
-    # df_scaled_X = pd.DataFrame(scaled_X)
+    data = PCA(n_components=n_components).fit_transform(X_data)
+    df = pd.DataFrame(data)
 
-    # run PCA
-    transform_data = PCA(n_components=n_components).fit_transform(X_data)
-    #transform_data = PCA(n_components=n_components).fit_transform(df_scaled_X)
-    df = pd.DataFrame(transform_data)
     return df
-
-
-def test_components_kpca(df, X_columns):
-    for i in range(1, 20):
-        clf = KernelPCA(
-            n_components=i,
-            kernel='rbf',
-            gamma = 0.0002,
-            fit_inverse_transform=True
-        ).fit_transform(X_data)
 
 
 def fit_kernel_PCA(X_data, n_components):
     '''
    Documentation at: http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.KernelPCA.html
     '''
-    transform_data = KernelPCA(
+    data = KernelPCA(
         n_components=n_components,
         kernel='rbf',
         gamma = 0.0002,
         fit_inverse_transform=True
     ).fit_transform(X_data)
-    df = pd.DataFrame(transform_data, dtype=np.float64)
 
-    # normalize data
-    # z_scaler = StandardScaler(copy=True, with_mean=True, with_std=True)
-    # scaled_X = z_scaler.fit_transform(df)
-    # df_scaled_X = pd.DataFrame(scaled_X)
+    df = pd.DataFrame(data, dtype=np.float64)
 
-    # return df_scaled_X
     return df
 
 def select_feature_sample(df, X_columns):
@@ -196,6 +175,7 @@ def nb_trial(samples):
     '''
     acc_train = []
     acc_test = []
+    conf_matrix = []
 
     for trial, data in samples.items():
         X_train, y_train, X_test, y_test = data
@@ -213,16 +193,37 @@ def nb_trial(samples):
 
         acc_train.append(nbclf.score(X_train, y_train))
         acc_test.append(nbclf.score(X_test, y_test))
-        #fpr, tpr, _ = roc_curve(y_test.ravel(), y_pred.ravel())
+
+        conf_matrix.append(confusion_matrix(y_test, y_pred).ravel())
 
     scores = {
         'accuracy_train': acc_train,
         'accuracy_test': acc_test,
-        #'sensitivity_test': tpr,
-        #'specificity_test': 1 - fpr
+        'confusion_matrix': conf_matrix
     }
 
     return scores
+
+
+def average_confusion_matrices(data_list, label):
+    matrix = data_list[0]
+    for i in range(1, len(data_list)):
+        matrix = [x + y for x, y in zip(
+            matrix, data_list[i])]
+
+    matrix = [x / 30 for x in matrix]
+
+    m = np.array(matrix)
+    m = m.reshape(10,10)
+
+    s = '\n'.join('\t'.join('{:.2f}'.format(x) for x in y) for y in m)
+    # save testing accuracy data to local file
+    filename = 'data/{}.txt'.format(label)
+
+    with open(filename, 'w') as f:
+        f.write(s)
+
+    return matrix
 
 
 def summary_statistics(data, confidence):
