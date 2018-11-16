@@ -232,7 +232,8 @@ def compare_kpca(df, X_columns, y_column):
 # print(kpca_nb)
 
 # compare_lpca(df_small, X_columns, y_column)
-compare_kpca(df_small, X_columns, y_column)
+#compare_kpca(df_small, X_columns, y_column)
 
 ## Visualize the KPCA accuracy scores by number of components
-#plot_pc1_v_pc2(df_small, X_columns, y_column)
+#plot_linear_pc1_v_pc2(df_small, X_columns, y_column)
+#plot_kernel_pc1_v_pc2(df_small, X_columns, y_column)

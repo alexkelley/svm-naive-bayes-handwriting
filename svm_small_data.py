@@ -239,7 +239,7 @@ def compare_kpca(df, X_columns, y_column):
             label_results[label] = svm_scores
             export_list.extend(svm_scores['accuracy_test'])
 
-        #print(export_list)
+        print(export_list)
         # report mean accuracy & CI for each class
         # overall_data = {}
         # for label, r in label_results.items():
