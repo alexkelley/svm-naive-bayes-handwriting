@@ -120,7 +120,7 @@ def kernel_pca_nb(df, X_columns, y_column):
     X_data = df[X_columns]
 
     # reduce X to new DateFrame with 35 PCs
-    n_components = 35
+    n_components = 64
     mnist_kpca = fit_kernel_PCA(X_data, n_components)
 
     # reattach labels to reduced DataFrame
@@ -228,8 +228,8 @@ def compare_kpca(df, X_columns, y_column):
 # print(alternate_nb)
 # lpca_nb = linear_pca_nb(df_small, X_columns, y_column)
 # print(lpca_nb)
-# kpca_nb = kernel_pca_nb(df_small, X_columns, y_column)
-# print(kpca_nb)
+kpca_nb = kernel_pca_nb(df_small, X_columns, y_column)
+print(kpca_nb)
 
 # compare_lpca(df_small, X_columns, y_column)
 #compare_kpca(df_small, X_columns, y_column)

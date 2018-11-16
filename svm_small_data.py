@@ -89,7 +89,7 @@ def linear_pca_svm(df, X_columns, y_column):
     X_data = df[X_columns]
 
     # reduce X to new DateFrame with desired number of PCs
-    n_components = 13
+    n_components = 6
     mnist_lpca = fit_linear_PCA(X_data, n_components)
 
     # reattach labels to reduced DataFrame
@@ -220,7 +220,7 @@ def compare_lpca(df, X_columns, y_column):
 def compare_kpca(df, X_columns, y_column):
     X_data = df[X_columns]
     results = []
-    for i in range(1, 3): #65
+    for i in range(1, 65): #65
         # reduce X to new DateFrame with varying PCs
         df_kpca = fit_kernel_PCA(X_data, i)
 
@@ -270,11 +270,11 @@ if __name__ == '__main__':
 
     # all_features_svm(df_small, X_columns, y_column)
     # alternate_features_svm(df_small, X_columns, y_column)
-    #linear_pca_svm(df_small, X_columns, y_column)
+    linear_pca_svm(df_small, X_columns, y_column)
     #kernel_pca_svm(df_small, X_columns, y_column)
 
     #compare_lpca(df_small, X_columns, y_column)
-    compare_kpca(df_small, X_columns, y_column)
+    #compare_kpca(df_small, X_columns, y_column)
 
     end_time = time.time()
     print('\nElapsed time: {:.2f} seconds\n'.format(end_time - start_time))

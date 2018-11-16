@@ -27,7 +27,7 @@ df = load_small()
 X_columns = list(df)[:-1]
 y_column = 'label'
 
-n_components = 13
+n_components = 5
 pca = PCA(n_components=n_components)
 data = pca.fit_transform(df[X_columns])
 df2 = pd.DataFrame(data)
