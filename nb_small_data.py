@@ -119,8 +119,8 @@ def kernel_pca_nb(df, X_columns, y_column):
     '''
     X_data = df[X_columns]
 
-    # reduce X to new DateFrame with 13 PCs
-    n_components = 13
+    # reduce X to new DateFrame with 35 PCs
+    n_components = 35
     mnist_kpca = fit_kernel_PCA(X_data, n_components)
 
     # reattach labels to reduced DataFrame
@@ -209,7 +209,7 @@ def compare_kpca(df, X_columns, y_column):
         results.append((i, accuracy))
 
     # save testing accuracy data to local file
-    list_name = 'test_kernel_pca_small_nb'
+    list_name = 'test_kernel_pca_small_nb2'
     filename = 'data/{}.py'.format(list_name)
 
     with open(filename, 'w') as f:
@@ -232,7 +232,7 @@ def compare_kpca(df, X_columns, y_column):
 # print(kpca_nb)
 
 # compare_lpca(df_small, X_columns, y_column)
-# compare_kpca(df_small, X_columns, y_column)
+compare_kpca(df_small, X_columns, y_column)
 
 ## Visualize the KPCA accuracy scores by number of components
 #plot_pc1_v_pc2(df_small, X_columns, y_column)

@@ -1,3 +1,181 @@
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+
 import time
 import pprint
 from project_functions import *
@@ -21,8 +199,6 @@ def all_features_svm(df, X_columns, y_column):
     for label, trial_samples in svm_data.items():
         svm_scores = svm_trial(trial_samples)
         label_results[label] = svm_scores
-
-    summarize_labels(label_results, 'svm_all_results')
 
     # report mean accuracy & CI for each class
     overall_data = {}
@@ -61,8 +237,6 @@ def alternate_features_svm(df, X_columns, y_column):
         svm_scores = svm_trial(trial_samples)
         label_results[label] = svm_scores
 
-    summarize_labels(label_results, 'svm_alternate_results')
-
     # report mean accuracy & CI for each class
     overall_data = {}
     export_list = []
@@ -89,8 +263,7 @@ def linear_pca_svm(df, X_columns, y_column):
     X_data = df[X_columns]
 
     # reduce X to new DateFrame with desired number of PCs
-    n_components = 13
-    mnist_lpca = fit_linear_PCA(X_data, n_components)
+    mnist_lpca = fit_linear_PCA(X_data, 13)
 
     # reattach labels to reduced DataFrame
     mnist_lpca[y_column] = df[y_column]
@@ -104,8 +277,6 @@ def linear_pca_svm(df, X_columns, y_column):
         svm_scores = svm_trial(samples)
         label_results[label] = svm_scores
 
-    summarize_labels(label_results, 'svm_lpca_results')
-
     # report mean accuracy & CI for each class
     overall_data = {}
     export_list = []
@@ -116,7 +287,7 @@ def linear_pca_svm(df, X_columns, y_column):
         export_list.extend(results['accuracy_test'])
 
     # compute overall mean accuracy
-    title = 'SVM on Small Dataset using {} PCs with Linear PCA'.format(n_components)
+    title = 'SVM on Small Dataset using Linear PCA'
     print(svm_report(overall_data, 0.95, title))
 
     # save testing accuracy data to local file
@@ -132,15 +303,14 @@ def linear_pca_svm(df, X_columns, y_column):
 def kernel_pca_svm(df, X_columns, y_column):
     X_data = df[X_columns]
 
-    # reduce X to new DateFrame with selected PCs
-    n_components = 5
-    df_kpca = fit_kernel_PCA(X_data, n_components)
+    # reduce X to new DateFrame with 13 PCs
+    mnist_kpca = fit_kernel_PCA(X_data, 35)
 
     # reattach labels to reduced DataFrame
-    df_kpca['label'] = df[y_column]
-    X_columns_kpca = list(df_kpca)[:-1]
+    mnist_kpca['label'] = df[y_column]
+    X_columns_kpca = list(mnist_kpca)[:-1]
 
-    svm_data = build_svm_dataset(df_kpca, X_columns_kpca, y_column)
+    svm_data = build_svm_dataset(mnist_kpca, X_columns_kpca, y_column)
 
     # run SVM on each sample for each class
     label_results = {}
@@ -148,18 +318,17 @@ def kernel_pca_svm(df, X_columns, y_column):
         svm_scores = svm_trial(samples)
         label_results[label] = svm_scores
 
-    summarize_labels(label_results, 'svm_kpca_results')
-
     # report mean accuracy & CI for each class
     overall_data = {}
     export_list = []
     for label, results in label_results.items():
+        title = 'SVM on Small Dataset using Kernel PCA: {} class.'.format(label)
+        #print(trials_report(svm_scores, 0.95, title))
         overall_data[label] = summary_statistics(results['accuracy_test'], 0.95)
         export_list.extend(results['accuracy_test'])
 
     # compute overall mean accuracy
-    title = 'SVM on Small Dataset using {} PCs from Kernel PCA'.format(n_components)
-    #print(title)
+    title = 'SVM on Small Dataset using Kernel PCA'
     print(svm_report(overall_data, 0.95, title))
 
     # save testing accuracy data to local file
@@ -171,110 +340,16 @@ def kernel_pca_svm(df, X_columns, y_column):
 
     return True
 
-
-def compare_lpca(df, X_columns, y_column):
-    X_data = df[X_columns]
-    results = []
-    for i in range(1, 3): #65
-        # reduce X to new DateFrame with varying PCs
-        df_lpca = fit_linear_PCA(X_data, i)
-
-        # reattach labels to reduced DataFrame
-        df_lpca['label'] = df[y_column]
-
-        # build 30 training/testing samples using Linear PCA data
-        X_columns_lpca = list(df_lpca)[:-1]
-        svm_data = build_svm_dataset(df_lpca, X_columns_lpca, y_column)
-
-        # run SVM on each sample for each class
-        label_results = {}
-        export_list = []
-        for label, samples in svm_data.items():
-            svm_scores = svm_trial(samples)
-            label_results[label] = svm_scores
-            export_list.extend(svm_scores['accuracy_test'])
-
-        #print(export_list)
-        # report mean accuracy & CI for each class
-        # overall_data = {}
-        # for label, r in label_results.items():
-        #     overall_data[label] = summary_statistics(r['accuracy_test'], 0.95)
-
-        title = 'SVM classifier using {} PCs from Linear PCA'.format(i)
-        print(title)
-        #print(kpca_trials_report(export_list, 0.95, title))
-
-        accuracy = summary_statistics(export_list, 0.95)['mean']
-        results.append((i, accuracy))
-
-    # save testing accuracy data to local file
-    list_name = 'test_linear_pca_small_svm'
-    filename = 'data/{}.py'.format(list_name)
-
-    with open(filename, 'w') as f:
-        f.write('{0} = {1}'.format(list_name, results))
-
-    return True
-
-
-def compare_kpca(df, X_columns, y_column):
-    X_data = df[X_columns]
-    results = []
-    for i in range(1, 3): #65
-        # reduce X to new DateFrame with varying PCs
-        df_kpca = fit_kernel_PCA(X_data, i)
-
-        # reattach labels to reduced DataFrame
-        df_kpca['label'] = df[y_column]
-
-        # build 30 training/testing samples using Linear PCA data
-        X_columns_kpca = list(df_kpca)[:-1]
-        svm_data = build_svm_dataset(df_kpca, X_columns_kpca, y_column)
-
-        # run SVM on each sample for each class
-        label_results = {}
-        export_list = []
-        for label, samples in svm_data.items():
-            svm_scores = svm_trial(samples)
-            label_results[label] = svm_scores
-            export_list.extend(svm_scores['accuracy_test'])
-
-        #print(export_list)
-        # report mean accuracy & CI for each class
-        # overall_data = {}
-        # for label, r in label_results.items():
-        #     overall_data[label] = summary_statistics(r['accuracy_test'], 0.95)
-
-        title = 'SVM classifier using {} PCs from Kernel PCA'.format(i)
-        print(title)
-        #print(kpca_trials_report(export_list, 0.95, title))
-
-        accuracy = summary_statistics(export_list, 0.95)['mean']
-        results.append((i, accuracy))
-
-    # save testing accuracy data to local file
-    list_name = 'test_kernel_pca_small_svm'
-    filename = 'data/{}.py'.format(list_name)
-
-    with open(filename, 'w') as f:
-        f.write('{0} = {1}'.format(list_name, results))
-
-    return True
-
-
 ################
 ## Run Trials ##
 ################
 if __name__ == '__main__':
     start_time = time.time()
 
-    # all_features_svm(df_small, X_columns, y_column)
-    # alternate_features_svm(df_small, X_columns, y_column)
-    #linear_pca_svm(df_small, X_columns, y_column)
-    #kernel_pca_svm(df_small, X_columns, y_column)
-
-    #compare_lpca(df_small, X_columns, y_column)
-    compare_kpca(df_small, X_columns, y_column)
+    all_features_svm(df_small, X_columns, y_column)
+    alternate_features_svm(df_small, X_columns, y_column)
+    linear_pca_svm(df_small, X_columns, y_column)
+    kernel_pca_svm(df_small, X_columns, y_column)
 
     end_time = time.time()
     print('\nElapsed time: {:.2f} seconds\n'.format(end_time - start_time))

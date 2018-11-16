@@ -40,6 +40,7 @@ def calculate_t_tests(means):
 
     return t_results
 
-
-#print(calculate_t_tests(nb_means))
+print("Naive Bayes")
+print(calculate_t_tests(nb_means))
+print("SVM")
 print(calculate_t_tests(svm_means))

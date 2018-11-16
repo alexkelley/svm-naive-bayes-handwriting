@@ -37,12 +37,14 @@ approximation = pca.inverse_transform(data)
 nrows = 10
 ncols = 2
 fig, axes = plt.subplots(nrows, ncols, figsize=(2,8))
+
 for row in range(nrows):
     label = np.array(df.loc[row])[-1]
     image1 = np.array(df.loc[row])[:-1]
     image2 = approximation[row].reshape(8,8)
     axes[row, 0].imshow(image1.reshape(8,8), cmap=plt.cm.gray)
     axes[row, 0].set_yticklabels([])
+    axes[row, 0].set_ylabel(label)
     axes[row, 0].set_xticklabels([])
     axes[row, 1].imshow(image2, cmap=plt.cm.gray)
     axes[row, 1].set_yticklabels([])
